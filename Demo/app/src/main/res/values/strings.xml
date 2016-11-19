@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Demo</string>
     <string name="chocoyo_labs_splash_class_name">com.chocoyo.labs.app.demo.MainActivity</string>
+
+    <string name="main_button_create">Crear</string>
+    <string name="main_edit_text_card_number">00000000</string>
 </resources>
