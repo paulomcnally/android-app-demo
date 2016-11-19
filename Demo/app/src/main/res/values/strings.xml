@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Demo</string>
+    <string name="chocoyo_labs_splash_class_name">com.chocoyo.labs.app.demo.MainActivity</string>
 </resources>
