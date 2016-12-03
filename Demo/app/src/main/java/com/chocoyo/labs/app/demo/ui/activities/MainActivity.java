@@ -1,4 +1,4 @@
-package com.chocoyo.labs.app.demo;
+package com.chocoyo.labs.app.demo.ui.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,12 +8,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.chocoyo.labs.app.demo.ui.JuanActivity;
+import com.chocoyo.labs.app.demo.DatabaseUtil;
+import com.chocoyo.labs.app.demo.MyWelcomeActivity;
+import com.chocoyo.labs.app.demo.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.stephentuso.welcome.WelcomeHelper;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class MainActivity extends AppCompatActivity {
+    private FirebaseDatabase mDatabase;
+
+    @BindView(R.id.open) Button buttonOpen;
 
     WelcomeHelper welcomeScreen;
 
@@ -25,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         // welcome message
         welcomeScreen = new WelcomeHelper(this, MyWelcomeActivity.class);
@@ -32,28 +42,24 @@ public class MainActivity extends AppCompatActivity {
 
         // database
         // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("message");
+        //FirebaseDatabase database = FirebaseDatabase.getInstance();
+        mDatabase = DatabaseUtil.getDatabase();
+        myRef = mDatabase.getReference("message");
 
         //myRef.setValue("Hello, World!");
 
         // initialize
         initCreateNumber();
 
-        initButtonOpen();
+        // set button text
+        buttonOpen.setText(getString(R.string.app_name));
 
     }
 
-    private void initButtonOpen() {
-        Button button = (Button) findViewById(R.id.open);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openJuan();
-            }
-        });
+    @OnClick(R.id.open)
+    public void open(View view) {
+        openJuan();
     }
-
     private void openJuan() {
         Intent intent = new Intent(
                 getApplicationContext(),
