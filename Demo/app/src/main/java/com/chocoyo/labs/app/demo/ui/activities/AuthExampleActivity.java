@@ -1,6 +1,14 @@
 package com.chocoyo.labs.app.demo.ui.activities;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,16 +17,29 @@ import android.widget.Toast;
 
 import com.chocoyo.labs.app.demo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AuthExampleActivity extends AppCompatActivity {
+
+    private static final int SELECT_IMAGE_ACTIVITY_REQUEST_CODE = 200;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 300;
 
     @BindView(R.id.email)
     EditText email;
@@ -30,12 +51,33 @@ public class AuthExampleActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private StorageReference mountainsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth_example);
         ButterKnife.bind(this);
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://fir-7fdb2.appspot.com");
+
+        mountainsRef = storageRef.child("avatar.jpg");
+
+
+        mountainsRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.i(TAG, uri.toString());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.i(TAG, exception.getMessage());
+            }
+        });
+
+
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -52,6 +94,31 @@ public class AuthExampleActivity extends AppCompatActivity {
                 }
             }
         };
+    }
+
+    @OnClick(R.id.add_avatar)
+    public void addAvatar() {
+
+        int writeExternalStorage = ContextCompat.checkSelfPermission(AuthExampleActivity.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (writeExternalStorage == PackageManager.PERMISSION_GRANTED) {
+            openGallery();
+        } else {
+            ActivityCompat.requestPermissions(AuthExampleActivity.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        }
+    }
+
+    /**
+     * Open gallery activity
+     */
+    private void openGallery() {
+
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        intent.setType("image/*");
+        startActivityForResult(intent, SELECT_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
     private boolean validate() {
@@ -131,6 +198,50 @@ public class AuthExampleActivity extends AppCompatActivity {
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            assert cursor != null;
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+            setAvatar(picturePath);
+        }
+    }
+
+    private void setAvatar(String imagePath) {
+
+        InputStream stream;
+        try {
+            stream = new FileInputStream(new File(imagePath));
+            UploadTask uploadTask = mountainsRef.putStream(stream);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.e("d", exception.getMessage());
+
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+                    assert downloadUrl != null;
+
+                    Log.i(TAG, downloadUrl.toString());
+               }
+            });
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
