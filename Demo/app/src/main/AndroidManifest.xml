@@ -18,13 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity">
-
-        </activity>
-        <activity android:name=".MyWelcomeActivity"
-            android:theme="@style/WelcomeScreenTheme">
-
-        </activity>
+        <activity android:name=".MainActivity"></activity>
+        <activity
+            android:name=".MyWelcomeActivity"
+            android:theme="@style/WelcomeScreenTheme"></activity>
+        <activity
+            android:name=".ui.JuanActivity"
+            android:label="@string/title_activity_juan"></activity>
     </application>
 
 </manifest>

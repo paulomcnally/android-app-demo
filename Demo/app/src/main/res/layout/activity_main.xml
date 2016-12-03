@@ -30,4 +30,14 @@
         android:layout_centerHorizontal="true"
         android:inputType="number" />
 
+    <Button
+        android:text="Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/create"
+        android:layout_alignLeft="@+id/create"
+        android:layout_alignStart="@+id/create"
+        android:layout_marginTop="80dp"
+        android:id="@+id/open" />
+
 </RelativeLayout>

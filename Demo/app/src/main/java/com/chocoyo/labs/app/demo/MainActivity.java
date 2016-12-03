@@ -1,5 +1,6 @@
 package com.chocoyo.labs.app.demo;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.chocoyo.labs.app.demo.ui.JuanActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.stephentuso.welcome.WelcomeHelper;
@@ -38,6 +40,25 @@ public class MainActivity extends AppCompatActivity {
         // initialize
         initCreateNumber();
 
+        initButtonOpen();
+
+    }
+
+    private void initButtonOpen() {
+        Button button = (Button) findViewById(R.id.open);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openJuan();
+            }
+        });
+    }
+
+    private void openJuan() {
+        Intent intent = new Intent(
+                getApplicationContext(),
+                JuanActivity.class);
+        startActivity(intent);
     }
 
     private void initCreateNumber() {
