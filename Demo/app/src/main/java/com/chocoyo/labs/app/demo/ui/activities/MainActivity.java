@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private void openJuan() {
         Intent intent = new Intent(
                 getApplicationContext(),
-                JuanActivity.class);
+                AuthExampleActivity.class);
         startActivity(intent);
     }
 

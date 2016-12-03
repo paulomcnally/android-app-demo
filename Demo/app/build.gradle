@@ -28,9 +28,11 @@ dependencies {
     compile 'com.chocoyo.labs:splash:0.0.2'
     compile 'com.stephentuso:welcome:1.1.0'
     compile 'com.google.firebase:firebase-database:9.8.0'
-
+    compile 'com.google.firebase:firebase-auth:9.8.0'
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+
+
 
     testCompile 'junit:junit:4.12'
 }
