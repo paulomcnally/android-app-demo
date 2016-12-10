@@ -2,12 +2,14 @@ package com.chocoyo.labs.app.demo.models;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
+
 /**
  * Created by polin on 12-03-16.
  */
 
 @IgnoreExtraProperties
-public class JuanModel {
+public class JuanModel implements Serializable {
 
     public String username;
     public String email;

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.chocoyo.labs.app.demo.DatabaseUtil;
 import com.chocoyo.labs.app.demo.MyWelcomeActivity;
 import com.chocoyo.labs.app.demo.R;
+import com.chocoyo.labs.app.demo.models.JuanModel;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.stephentuso.welcome.WelcomeHelper;
@@ -61,9 +62,16 @@ public class MainActivity extends AppCompatActivity {
         openJuan();
     }
     private void openJuan() {
+
+        JuanModel juanModel = new JuanModel();
+        juanModel.setUsername("Kenneth");
+        juanModel.setEmail("kenneth@chocoyo.com");
+
+
         Intent intent = new Intent(
                 getApplicationContext(),
                 JuanActivity.class);
+        intent.putExtra(JuanActivity.MODEL_NAME, juanModel);
         startActivity(intent);
     }
 

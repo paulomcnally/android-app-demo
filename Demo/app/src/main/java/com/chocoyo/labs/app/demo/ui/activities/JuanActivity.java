@@ -1,5 +1,6 @@
 package com.chocoyo.labs.app.demo.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -17,6 +18,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.UUID;
 
 public class JuanActivity extends Activity {
+    private static final String TAG = "JuanActivity";
+
+    public static final String MODEL_NAME = "model_name";
+
+    private JuanModel juanModel;
 
     private FirebaseDatabase mDatabase;
     private DatabaseReference users;
@@ -33,6 +39,23 @@ public class JuanActivity extends Activity {
         writeNewUser("Juan", "juan@perezz.com");
 
         readData();
+
+        initExtraData();
+    }
+
+    private void initExtraData() {
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null) {
+            juanModel = (JuanModel) extras.getSerializable(MODEL_NAME);
+
+            assert juanModel != null;
+            Log.i(TAG, juanModel.getUsername());
+            Log.i(TAG, juanModel.getEmail());
+            // and get whatever type user account id is
+        }
+
+
     }
 
     private void readData() {
