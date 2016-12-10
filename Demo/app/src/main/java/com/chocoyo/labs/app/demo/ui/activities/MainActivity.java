@@ -1,6 +1,7 @@
 package com.chocoyo.labs.app.demo.ui.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -54,6 +55,14 @@ public class MainActivity extends AppCompatActivity {
         // set button text
         buttonOpen.setText(getString(R.string.app_name));
 
+        openCall();
+
+    }
+
+    private void openCall() {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:82406543"));
+        startActivity(intent);
     }
 
     @OnClick(R.id.open)
