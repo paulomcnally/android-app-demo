@@ -3,23 +3,36 @@ package com.chocoyo.labs.app.demo.ui.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.chocoyo.labs.app.demo.DatabaseUtil;
+import com.chocoyo.labs.app.demo.GobuyRequest;
 import com.chocoyo.labs.app.demo.MyWelcomeActivity;
 import com.chocoyo.labs.app.demo.R;
+import com.chocoyo.labs.app.demo.models.CategoryModel;
+import com.chocoyo.labs.app.demo.models.RepoModel;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.stephentuso.welcome.WelcomeHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 
 public class MainActivity extends AppCompatActivity {
+
+
     private FirebaseDatabase mDatabase;
 
     @BindView(R.id.open) Button buttonOpen;
@@ -35,6 +48,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        GobuyRequest.getCategoriaAsync(new Callback<ArrayList<CategoryModel>>() {
+            @Override
+            public void success(ArrayList<CategoryModel> categoryModels, Response response) {
+                for (CategoryModel categoryModel: categoryModels) {
+                    Log.i("MainActivity", categoryModel.getDescripcion());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.i("MainActivity", error.getMessage());
+            }
+        });
+
 
         // welcome message
         welcomeScreen = new WelcomeHelper(this, MyWelcomeActivity.class);
